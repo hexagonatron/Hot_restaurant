@@ -18,11 +18,11 @@
 
   <div class="container">
     <div class="jumbotron text-center">
-      <h1><span class="fas fa-fire"></i>Hot Restaurant</h1>
+      <h1><span class="fa fa-fire"></i>Hot Restaurant</h1>
       <h3>Current Reservations and Waiting List</h3>
       <hr>
-      <a href="/reserve"><button class="btn btn-danger btn-lg"><span class="fas fa-credit-card"></span>Make Reservation</button></a>
-      <a href="/"><button class="btn btn-danger btn-lg"><span
+      <a href="/reserve"><button class="btn btn-danger btn-lg"><span class="fa fa-credit-card"></span>Make Reservation</button></a>
+      <a href="/"><button class="btn btn-outline-dark btn-lg"><span
             class="fa fa-home"></span></button></a>
     </div>
     <div class="row">
@@ -40,18 +40,70 @@
 
         <div class="card">
           <div class="card-header">
-            <h3><strong>Waiting List</strong></h3>
+            <h3>Waiting List</h3>
           </div>
-          <div class="card-body">
+          <div class="card-body" id="waitinglist">
             
             </div>
           </div>
+        <footer class="footer">
+            <p>Control Panel</p>
+            <p>
+                <a href ="#" id="cleartable">Clear Table</a> | 
+                <a href="/api/tables">API Table Link</a> | 
+                <a href="/api/waitlist">API Wait List</a>
+            </p>
+            </footer>
         </div>
       </div>
     </div>
   </div>
 
+  
   <script type="text/javascript">
+
+  const tablesDiv = document.querySelector("#reservations");
+  const waitListDiv = document.querySelector("#waitinglist");
+  const clearBtn = document.querySelector("#cleartable");
+
+  $.get("/api/reservation/", function (data) {
+    console.log(data);
+
+    /*
+    tables: Array(3)
+0: {name: "t4eewtew", phonenumber: "432432", email: "frefer@fre.com", uniqueId: "fewfew"}
+1: {name: "t4eewtewdew", phonenumber: "43243233", email: "frefer@ffefewre.com", uniqueId: " "}
+2: {name: "t4eewtewfefewdew", phonenumber: "4324323323233", email: "frefeffwrr@ffefewre.com", uniqueId: "fewfewffewfewfew"}
+length: 3
+__proto__: Array(0)
+waitlist: Array(0)
+length: 0
+__proto__: Array(0)
+__proto__: Object
+    */
+
+    data.tables.forEach((table, index) => {
+      //do stuff
+      const html = `<div class="well"><h2><span class="label label-primary">${index + 1}</span> | ${table.uniqueId}</h2></div>`;
+      tablesDiv.innerHTML += html;
+    } );
+
+    data.waitlist.forEach((list, index) => {
+      //do stuff
+      const html = `<div class="well"><h2><span class="label label-primary">${index + 1}</span> | ${list.uniqueId}</h2></div>`;
+      waitListDiv.innerHTML += html;
+    } );
+
+  });
+
+  clearBtn.addEventListener("click", (event) => {
+    alert("Deleting everything!!!!")
+    $.ajax({
+      url: "/api/clear",
+      type: "DELETE"
+    });
+    window.location.reload();
+  })
 
 
   </script>
