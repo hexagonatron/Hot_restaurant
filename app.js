@@ -11,6 +11,21 @@ const waitListArr = [];
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+
+const sanatize = (req, res, next) => {
+    req.body.uniqueId = escapeHtml(req.body.uniqueId);
+    next();
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
 app.listen(PORT, function() {
     console.log("Server listening on: http://localhost:" + PORT);
 });
@@ -37,7 +52,7 @@ app.delete("/api/clear", (req, res) => {
     waitListArr.length = 0;
 })
 
-app.post("/api/reservation", (req, res) => {
+app.post("/api/reservation", sanatize, (req, res) => {
     const reservation = req.body;
     if(tableArr.length < 5){
         tableArr.push(reservation);
